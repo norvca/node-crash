@@ -7,7 +7,15 @@ const geocoder = require('../utils/geocoder');
 // @route GET /api/v1/bootcamps
 // @access public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.find();
+  let query;
+
+  let queryStr = JSON.stringify(req.query);
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
+  query = JSON.parse(queryStr);
+
+  console.log(query);
+
+  const bootcamp = await Bootcamp.find(query);
   res
     .status(201)
     .json({ success: true, count: bootcamp.length, data: bootcamp });
